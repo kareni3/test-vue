@@ -1,5 +1,8 @@
 <template>
 <div>
+
+
+<!--
     <div v-if="list===null" class="qwerty"> 
         <v-progress-circular
             :size="50"
@@ -17,6 +20,15 @@
     <div v-else>
         list is empty
     </div>
+  <v-progress-linear class="qwer" color="red" indeterminate></v-progress-linear>-->
+
+  <v-progress-linear
+    class="qwer" color="red" 
+    v-model="buffer"
+    :buffer-value="bufferValue"
+    buffer
+  ></v-progress-linear>
+
     <div class="container">
         <div class="kolom"></div>
         <div class="kolom"></div>
@@ -47,6 +59,10 @@ export default {
     return {
       items: ['asd', 'dsa', 'ert'],
       list: null,
+        value: 0,
+        buffer: 0,
+        bufferValue: 100,
+        interval: 0,
       settings: {
         maxScrollbarLength: 60,
       },
@@ -59,21 +75,44 @@ export default {
       isNull(data) {
         return data === null
       },
+      
+      startBuffer () {
+        this.interval = setInterval(() => {
+          this.buffer += Math.random() * (0.5 - 0.2) + 0.2
+          this.bufferValue += Math.random() * (0.5 - 0.2) + 0.2
+        }, 1000/25)
+      },
     scrollHanle(evt) {
       console.log(evt)
     }
   },
-  mounted() {
+  mounted () {
     var ps = new PerfectScrollbar('.container');
-  }
+      this.startBuffer()
+    },
+    
+
+    beforeDestroy () {
+      clearInterval(this.interval)
+    },
 }
 </script>
 
 <style>
+body {
+    padding: 0;
+    margin: 0;
+}
 .qwerty {
     height: 40px;
     margin: auto;
     text-align: center;
+}
+.qwer {
+    position: fixed;
+    top:-18px;
+    left:0;
+    width: 100vw!important;
 }
 .scroll-area {
   position: relative;
@@ -99,6 +138,7 @@ export default {
   width: 480px;
   height: 320px;
   overflow: auto;
+  background: #fafafa;
 }
 
 .container .content {
